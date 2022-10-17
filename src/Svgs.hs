@@ -9,6 +9,7 @@ import Clay
 import Data.Text.Lazy (toStrict)
 import Data.Text (unpack)
 import Data.String (fromString)
+import Data.String.Interpolate (iii)
 
 feDropShadow_ :: Monad m => [Attribute] -> SvgT m ()
 feDropShadow_ = with $ makeXmlElementNoEnd "feDropShadow"
@@ -67,7 +68,7 @@ logo = do
 
 banner :: Svg ()
 banner = do
-  with (svg2_ contentsSvg) [class_ "banner", viewBox_ "0 1 800 215"]
+  with (svg2_ contentsSvg) [width_ "3000px", class_ "banner", viewBox_ "0 1 800 215"]
   where
     contentsSvg = do
       style_ . fromString $ renderCss styleSvg
@@ -104,7 +105,7 @@ banner = do
         "stroke-width" -: "0.2"
 
       "path" # nthOfType "even" ? do
-        "stroke" -: "var(--text-colour)"
+        "stroke" -: "var(--opposite-text-colour)"
         "stroke-width" -: "0.2"
         "filter" -: "url(#back-glow)"
 
@@ -112,6 +113,7 @@ banner = do
         "filter" -: "url(#point-light) url(#bottom-glow)"
 
       "path" # nthOfType "4" <> "path" # nthOfType "5" ? do
+        "stroke-width" -: "0"
         "fill" -: "var(--accent-colour)"
         "filter" -: "url(#bottom-glow)"
 
@@ -119,154 +121,63 @@ banner = do
       rect_ [id_ "top-bg", x_ "0", y_ "0", rx_ "0", ry_ "0", width_ "400", height_ "120", fill_ "url(#gradient-top)"]
       rect_ [id_ "bottom-bg", x_ "0", y_ "120", rx_ "0", ry_ "0", width_ "400", height_ "95", fill_ "url(#gradient-bottom)"]
 
-      path_ [d_ "M 0 120\
-                \h 400"
-            ]
+      path_ [d_ "M 0 120 h 400"]
 
-      -- Eleven
-      path_ [d_ "M 80 0 \
-               \v 120.13\
-               \h -10 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 80 120\
-               \l 245 95\
-               \l -120 0\
-               \l -135 -95"
-            ]
+      drawTopBar 80 (-10)
+      drawBottomBar 80 95 245 (-120) (-135)
 
-      -- Ten
-      path_ [d_ "M 68 0 \
-               \v 120.13\
-               \h -6 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 68 120\
-               \l 119 95\
-               \l -65 0\
-               \l -60 -95"
-            ]
+      drawTopBar 68 (-6)
+      drawBottomBar 68 95 119 (-65) (-60)
 
-      -- nine
-      path_ [d_ "M 60 0 \
-               \v 120.13\
-               \h -8 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 60 120\
-               \l 45 95\
-               \l -110 0\
-               \l 57 -95\
-               \z"
-            ]
+      drawTopBar 60 (-8)
+      drawBottomBar 60 95 45 (-110) 57
 
-      -- eight
-      path_ [d_ "M 50 0 \
-               \v 120.13\
-               \h -4 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 50 120\
-               \l -65 95\
-               \l -30 0\
-               \l 91 -95\
-               \z"
-            ]
+      drawTopBar 50 (-4)
+      drawBottomBar 50 95 (-65) (-30) 91
 
-      -- Seven
-      path_ [d_ "M 44 0 \
-               \v 120.13\
-               \h -8 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 44 120\
-               \l -105 95\
-               \l -50 0\
-               \l 147 -95"
-            ]
+      drawTopBar 44 (-8)
+      drawBottomBar 44 95 (-105) (-50) 147
 
-    -- Six
-      path_ [d_ "M 34 0 \
-               \v 120.13\
-               \h -4 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 34 120\
-               \l -87 50\
-               \l -25 0\
-               \l 108 -50"
-            ]
+      drawTopBar 34 (-4)
+      drawBottomBar 34 50 (-87) (-25) 108
 
-      -- five
-      path_ [d_ "M 28 0 \
-               \v 120.13\
-               \h -4 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 28 120\
-               \l -120 50\
-               \l -25 0\
-               \l 141 -50"
-            ]
+      drawTopBar 28 (-4)
+      drawBottomBar 28 50 (-120) (-25) 141
 
-      -- four
-      path_ [d_ "M 22 0 \
-               \v 120.13\
-               \h -7 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 22 120\
-               \l -157 50\
-               \l -25 0\
-               \l 175 -50"
-            ]
+      drawTopBar 22 (-7)
+      drawBottomBar 22 50 (-157) (-25) 175
 
-      -- three
-      path_ [d_ "M 12 0 \
-               \v 120.13\
-               \h -2 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 12 120\
-               \l -197 50\
-               \l -25 0\
-               \l 220 -50"
-            ]
+      drawTopBar 12 (-2)
+      drawBottomBar 12 50 (-197) (-25) 220
 
-      -- two
-      path_ [d_ "M 8 0 \
-               \v 120.13\
-               \h -2 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 8 120\
-               \l -240 50\
-               \l -25 0\
-               \l 263 -50"
-            ]
+      drawTopBar 8 (-2)
+      drawBottomBar 8 50 (-240) (-25) 263
 
-      --one
-      path_ [d_ "M 4 0 \
-               \v 120.13\
-               \h -4 0\
-               \v 0 -120\
-               \z"
-            ]
-      path_ [d_ "M 4 120\
-               \l -277 50\
-               \l -25 0\
-               \l 298 -50"
-            ]
+      drawTopBar 4 (-4)
+      drawBottomBar 4 50 (-277) (-25) 298
+
+      where
+        lineGap = 0.13 -- attempts to cover the middle line
+        barHeight = 120.0 :: Double
+
+        -- drawTopBar :: Double -> Double -> SvgT m ()
+        drawTopBar m1 h1 = do
+            path_ [d_ [iii|M #{m1} 0
+                           v #{barHeight + lineGap}
+                           h #{h1} 0
+                           v 0 -#{barHeight}
+                           z
+                      |]
+                  ]
+
+        drawBottomBar m1 h1 l1 l2 l3 = do
+            path_ [d_ [iii|M #{m1} #{barHeight}
+                           l #{l1} #{h1}
+                           l #{l2} 0
+                           l #{l3} -#{h1}
+                      |]
+                  ]
+
 
 
 
