@@ -49,7 +49,7 @@ logo = do
       text_ [filter_ "url(#text-glow)", y_ "25", x_ "89"] "w"
 
     defsSvg = do
-      term "filter" [id_ "text-glow"] $ do
+      filter_ [id_ "text-glow"] $ do
         feGaussianBlur_ [in_ "SourceGraphic", result_ "blur", stdDeviation_ ".3"]
         feDropShadow_ [in_ "blur", result_ "shadow", flood_color_ "white", dx_ "0", dy_ "1", flood_opacity_ ".4" ]
         feComposite_ [in_ "SourceGraphic", in2_ "shadow", operator_ "over"]
@@ -67,13 +67,206 @@ logo = do
 
 banner :: Svg ()
 banner = do
-  with (svg2_ contentsSvg) [class_ "favicon", viewBox_ "0 0 16 16"]
+  with (svg2_ contentsSvg) [class_ "banner", viewBox_ "0 1 800 215"]
   where
     contentsSvg = do
       style_ . fromString $ renderCss styleSvg
+      defs_ defsSvg
+      g_ drawSvg
+
+    defsSvg = do
+      radialGradient_ [id_ "gradient-top", cx_ "0.0", cy_ "0.9", r_ "1.4", fx_ "-0.19", fy_ "1", spreadMethod_ "pad" ] $ do
+        stop_ [offset_ "0%", stop_color_ "var(--shade-colour)"]
+        stop_ [offset_ "60%", stop_color_ "var(--primary-colour)"]
+      radialGradient_ [id_ "gradient-bottom", cx_ "0.0", cy_ "0.6", r_ "1.3", fx_ "-0.19", fy_ "1", spreadMethod_ "pad" ] $ do
+        stop_ [offset_ "0%", stop_color_ "var(--shade-colour)"]
+        stop_ [offset_ "65%", stop_color_ "var(--primary-colour)"]
+
+      filter_ [id_ "point-light"] $ do
+        feGaussianBlur_ [in_ "SourceGraphic", stdDeviation_ "10"]
+        term "feDiffuseLighting" [result_ "backlight", lighting_color_ "var(--text-colour)", surfaceScale_ "1", diffuseConstant_ "1", kernelUnitLength_ "1"] $ do
+          fePointLight_ [x_ "65", y_ "100", z_ "145"]
+        feComposite_ [in_ "SourceGraphic", in2_ "backlight", operator_ "arithmetic", k1_ "1", k2_ "0", k3_ "0", k4_ "0"]
+
+      filter_ [id_ "bottom-glow"] $ do
+        feDropShadow_ [in_ "SourceGraphic", flood_color_ "var(--text-colour)", dx_ "1", dy_ "2", flood_opacity_ ".4"]
+      filter_ [id_ "bottom-glow-small"] $ do
+        feDropShadow_ [in_ "SourceGraphic", flood_color_ "var(--text-colour)", dx_ "1", dy_ "1", flood_opacity_ ".2"]
+      filter_ [id_ "back-glow"] $ do
+        feDropShadow_ [in_ "SourceGraphic", flood_color_ "var(--text-colour)", dx_ "1", dy_ "-1", flood_opacity_ ".01"]
+
     styleSvg = do
-      "light" ? do
-        "path" -: "var(--primary-colour)"
+      "path" ? do
+        "fill" -: "var(--text-colour)"
+
+      "path" # firstOfType ? do
+        "stroke" -: "var(--opposite-text-colour)"
+        "stroke-width" -: "0.2"
+
+      "path" # nthOfType "even" ? do
+        "stroke" -: "var(--text-colour)"
+        "stroke-width" -: "0.2"
+        "filter" -: "url(#back-glow)"
+
+      "path" # nthOfType "odd" ? do
+        "filter" -: "url(#point-light) url(#bottom-glow)"
+
+      "path" # nthOfType "4" <> "path" # nthOfType "5" ? do
+        "fill" -: "var(--accent-colour)"
+        "filter" -: "url(#bottom-glow)"
+
+    drawSvg = do
+      rect_ [id_ "top-bg", x_ "0", y_ "0", rx_ "0", ry_ "0", width_ "400", height_ "120", fill_ "url(#gradient-top)"]
+      rect_ [id_ "bottom-bg", x_ "0", y_ "120", rx_ "0", ry_ "0", width_ "400", height_ "95", fill_ "url(#gradient-bottom)"]
+
+      path_ [d_ "M 0 120\
+                \h 400"
+            ]
+
+      -- Eleven
+      path_ [d_ "M 80 0 \
+               \v 120.13\
+               \h -10 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 80 120\
+               \l 245 95\
+               \l -120 0\
+               \l -135 -95"
+            ]
+
+      -- Ten
+      path_ [d_ "M 68 0 \
+               \v 120.13\
+               \h -6 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 68 120\
+               \l 119 95\
+               \l -65 0\
+               \l -60 -95"
+            ]
+
+      -- nine
+      path_ [d_ "M 60 0 \
+               \v 120.13\
+               \h -8 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 60 120\
+               \l 45 95\
+               \l -110 0\
+               \l 57 -95\
+               \z"
+            ]
+
+      -- eight
+      path_ [d_ "M 50 0 \
+               \v 120.13\
+               \h -4 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 50 120\
+               \l -65 95\
+               \l -30 0\
+               \l 91 -95\
+               \z"
+            ]
+
+      -- Seven
+      path_ [d_ "M 44 0 \
+               \v 120.13\
+               \h -8 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 44 120\
+               \l -105 95\
+               \l -50 0\
+               \l 147 -95"
+            ]
+
+    -- Six
+      path_ [d_ "M 34 0 \
+               \v 120.13\
+               \h -4 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 34 120\
+               \l -87 50\
+               \l -25 0\
+               \l 108 -50"
+            ]
+
+      -- five
+      path_ [d_ "M 28 0 \
+               \v 120.13\
+               \h -4 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 28 120\
+               \l -120 50\
+               \l -25 0\
+               \l 141 -50"
+            ]
+
+      -- four
+      path_ [d_ "M 22 0 \
+               \v 120.13\
+               \h -7 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 22 120\
+               \l -157 50\
+               \l -25 0\
+               \l 175 -50"
+            ]
+
+      -- three
+      path_ [d_ "M 12 0 \
+               \v 120.13\
+               \h -2 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 12 120\
+               \l -197 50\
+               \l -25 0\
+               \l 220 -50"
+            ]
+
+      -- two
+      path_ [d_ "M 8 0 \
+               \v 120.13\
+               \h -2 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 8 120\
+               \l -240 50\
+               \l -25 0\
+               \l 263 -50"
+            ]
+
+      --one
+      path_ [d_ "M 4 0 \
+               \v 120.13\
+               \h -4 0\
+               \v 0 -120\
+               \z"
+            ]
+      path_ [d_ "M 4 120\
+               \l -277 50\
+               \l -25 0\
+               \l 298 -50"
+            ]
 
 
 
