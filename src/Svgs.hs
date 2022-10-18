@@ -10,6 +10,7 @@ import Data.Text.Lazy (toStrict)
 import Data.Text (unpack)
 import Data.String (fromString)
 import Data.String.Interpolate (iii)
+import Control.Monad (forM_)
 
 feDropShadow_ :: Monad m => [Attribute] -> SvgT m ()
 feDropShadow_ = with $ makeXmlElementNoEnd "feDropShadow"
@@ -21,7 +22,7 @@ renderCss :: Css -> String
 renderCss css = unpack . toStrict $ Clay.renderWith Clay.compact [] css
 
 favicon :: Svg ()
-favicon = do
+favicon =
   with (svg2_ contentsSvg) [class_ "favicon", viewBox_ "0 0 16 16"]
   where
     textHeight = "16"
@@ -32,14 +33,14 @@ favicon = do
       text_ [y_ textHeight, x_ "1"] "t"
       text_ [y_ symbolHeight, x_ "7"] ":"
 
-    styleSvg = do
+    styleSvg =
       "text" ? do
-        fontFamily [fontHeading] [sansSerif]
-        fontSize (px 20)
-        "fill" -: accentColour
+      fontFamily [fontHeading] [sansSerif]
+      fontSize (px 20)
+      "fill" -: accentColour
 
 logo :: Svg ()
-logo = do
+logo =
   with (svg2_ contentsSvg) [class_ "logo"]
   where
     contentsSvg = do
@@ -49,25 +50,25 @@ logo = do
       text_ [filter_ "url(#text-glow)", y_ "24", x_ "80", class_ "colon"] ":"
       text_ [filter_ "url(#text-glow)", y_ "25", x_ "89"] "w"
 
-    defsSvg = do
+    defsSvg =
       filter_ [id_ "text-glow"] $ do
-        feGaussianBlur_ [in_ "SourceGraphic", result_ "blur", stdDeviation_ ".3"]
-        feDropShadow_ [in_ "blur", result_ "shadow", flood_color_ "white", dx_ "0", dy_ "1", flood_opacity_ ".4" ]
-        feComposite_ [in_ "SourceGraphic", in2_ "shadow", operator_ "over"]
+      feGaussianBlur_ [in_ "SourceGraphic", result_ "blur", stdDeviation_ ".3"]
+      feDropShadow_ [in_ "blur", result_ "shadow", flood_color_ "white", dx_ "0", dy_ "1", flood_opacity_ ".4" ]
+      feComposite_ [in_ "SourceGraphic", in2_ "shadow", operator_ "over"]
 
-    styleSvg = do
+    styleSvg =
       ".logo" ? do
-        fontFamily [fontLogo] []
-        fontSize (px 32)
-        fontWeight bold
-        "#text-glow" ? "feDropShadow" ? do
-          "flood-color" -: "var(--text-colour)"
-        "fill" -: "var(--text-colour)"
-        ".colon" ? do
-          "fill" -: "var(--accent-colour)"
+      fontFamily [fontLogo] []
+      fontSize (px 32)
+      fontWeight bold
+      "#text-glow" ? "feDropShadow" ? do
+        "flood-color" -: "var(--text-colour)"
+      "fill" -: "var(--text-colour)"
+      ".colon" ? do
+        "fill" -: "var(--accent-colour)"
 
 banner :: Svg ()
-banner = do
+banner =
   with (svg2_ contentsSvg) [width_ "3000px", class_ "banner", viewBox_ "0 1 800 215"]
   where
     contentsSvg = do
@@ -85,15 +86,15 @@ banner = do
 
       filter_ [id_ "point-light"] $ do
         feGaussianBlur_ [in_ "SourceGraphic", stdDeviation_ "10"]
-        term "feDiffuseLighting" [result_ "backlight", lighting_color_ "var(--text-colour)", surfaceScale_ "1", diffuseConstant_ "1", kernelUnitLength_ "1"] $ do
+        term "feDiffuseLighting" [result_ "backlight", lighting_color_ "var(--text-colour)", surfaceScale_ "1", diffuseConstant_ "1", kernelUnitLength_ "1"] $
           fePointLight_ [x_ "65", y_ "100", z_ "145"]
         feComposite_ [in_ "SourceGraphic", in2_ "backlight", operator_ "arithmetic", k1_ "1", k2_ "0", k3_ "0", k4_ "0"]
 
-      filter_ [id_ "bottom-glow"] $ do
+      filter_ [id_ "bottom-glow"] $
         feDropShadow_ [in_ "SourceGraphic", flood_color_ "var(--text-colour)", dx_ "1", dy_ "2", flood_opacity_ ".4"]
-      filter_ [id_ "bottom-glow-small"] $ do
+      filter_ [id_ "bottom-glow-small"] $
         feDropShadow_ [in_ "SourceGraphic", flood_color_ "var(--text-colour)", dx_ "1", dy_ "1", flood_opacity_ ".2"]
-      filter_ [id_ "back-glow"] $ do
+      filter_ [id_ "back-glow"] $
         feDropShadow_ [in_ "SourceGraphic", flood_color_ "var(--text-colour)", dx_ "1", dy_ "-1", flood_opacity_ ".01"]
 
     styleSvg = do
@@ -120,65 +121,44 @@ banner = do
     drawSvg = do
       rect_ [id_ "top-bg", x_ "0", y_ "0", rx_ "0", ry_ "0", width_ "400", height_ "120", fill_ "url(#gradient-top)"]
       rect_ [id_ "bottom-bg", x_ "0", y_ "120", rx_ "0", ry_ "0", width_ "400", height_ "95", fill_ "url(#gradient-bottom)"]
-
       path_ [d_ "M 0 120 h 400"]
 
-      drawTopBar 80 (-10)
-      drawBottomBar 80 95 245 (-120) (-135)
+      let plots = [(80, -10, 245, -120, -135, 95)
+                  ,(68, -6, 119, -65, -60, 95)
+                  ,(60, -8, 45, -110, 57, 95)
+                  ,(50, -4, -65, -30, 91, 95)
+                  ,(44, -8, -105, -50, 147, 95)
+                  ,(34, -4, -87, -25, 108, 50)
+                  ,(28, -4, -120, -25, 141, 50)
+                  ,(22, -7, -157, -25, 175, 50)
+                  ,(12, -2, -197, -25, 220, 50)
+                  ,(8, -2, -240, -25, 263, 50)
+                  ,(4, -4, -277, -25, 298, 50)
+                  ]
 
-      drawTopBar 68 (-6)
-      drawBottomBar 68 95 119 (-65) (-60)
-
-      drawTopBar 60 (-8)
-      drawBottomBar 60 95 45 (-110) 57
-
-      drawTopBar 50 (-4)
-      drawBottomBar 50 95 (-65) (-30) 91
-
-      drawTopBar 44 (-8)
-      drawBottomBar 44 95 (-105) (-50) 147
-
-      drawTopBar 34 (-4)
-      drawBottomBar 34 50 (-87) (-25) 108
-
-      drawTopBar 28 (-4)
-      drawBottomBar 28 50 (-120) (-25) 141
-
-      drawTopBar 22 (-7)
-      drawBottomBar 22 50 (-157) (-25) 175
-
-      drawTopBar 12 (-2)
-      drawBottomBar 12 50 (-197) (-25) 220
-
-      drawTopBar 8 (-2)
-      drawBottomBar 8 50 (-240) (-25) 263
-
-      drawTopBar 4 (-4)
-      drawBottomBar 4 50 (-277) (-25) 298
+      forM_ plots drawBar
 
       where
-        lineGap = 0.13 -- attempts to cover the middle line
         barHeight = 120.0 :: Double
+        lineGap = 0.13 -- attempts to cover the middle line
 
-        -- drawTopBar :: Double -> Double -> SvgT m ()
-        drawTopBar m1 h1 = do
-            path_ [d_ [iii|M #{m1} 0
-                           v #{barHeight + lineGap}
-                           h #{h1} 0
-                           v 0 -#{barHeight}
+        drawBar (x, w, l0, l1, l2, h) = do
+          drawTopBar_ x 0 w barHeight
+          drawBottomBar_ x barHeight h l0 l1 l2
+
+        drawTopBar_ x y w h =
+            path_ [d_ [iii|M #{x} #{y}
+                           v #{h + lineGap}
+                           h #{w} 0
+                           v 0 -#{h}
                            z
                       |]
-                  ]
-
-        drawBottomBar m1 h1 l1 l2 l3 = do
-            path_ [d_ [iii|M #{m1} #{barHeight}
-                           l #{l1} #{h1}
-                           l #{l2} 0
-                           l #{l3} -#{h1}
+              ]
+        drawBottomBar_ x y h l0 l1 l2 =
+            path_ [d_ [iii|M #{x} #{y}
+                           l #{l0} #{h}
+                           l #{l1} 0
+                           l #{l2} -#{h}
                       |]
-                  ]
-
-
-
-
+              ]
 
