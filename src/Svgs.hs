@@ -33,38 +33,46 @@ favicon =
       text_ [y_ textHeight, x_ "1"] "t"
       text_ [y_ symbolHeight, x_ "7"] ":"
 
-    styleSvg =
+    styleSvg = do
       "text" ? do
-      fontFamily [fontHeading] [sansSerif]
-      fontSize (px 20)
-      "fill" -: accentColour
+        fontFamily [fontHeading] [sansSerif]
+        fontSize (px 20)
+        "fill" -: accentColour
+
+hamburger :: Svg ()
+hamburger =
+  with (svg2_ contentsSvg) [viewBox_ "0 0 16 16"]
+  where
+    contentsSvg = do
+      rect_ [y_ "1", width_ "16", height_ "2"]
+      rect_ [y_ "7", width_ "16", height_ "2"]
+      rect_ [y_ "13", width_ "16", height_ "2"]
 
 logo :: Svg ()
 logo =
-  with (svg2_ contentsSvg) [class_ "logo"]
+  with (svg2_ contentsSvg) [width_ "150px", height_ "30px"]
   where
     contentsSvg = do
       style_ . fromString $ renderCss styleSvg
       defs_ defsSvg
-      text_ [filter_ "url(#text-glow)", y_ "25", x_ "0"] "tama"
-      text_ [filter_ "url(#text-glow)", y_ "24", x_ "80", class_ "colon"] ":"
-      text_ [filter_ "url(#text-glow)", y_ "25", x_ "89"] "w"
+      text_ [y_ "25", x_ "0"] "tama"
+      text_ [y_ "24", x_ "80"] ":"
+      text_ [y_ "25", x_ "89"] "w"
 
     defsSvg =
       filter_ [id_ "text-glow"] $ do
       feGaussianBlur_ [in_ "SourceGraphic", result_ "blur", stdDeviation_ ".3"]
-      feDropShadow_ [in_ "blur", result_ "shadow", flood_color_ "white", dx_ "0", dy_ "1", flood_opacity_ ".4" ]
+      feDropShadow_ [in_ "blur", result_ "shadow", flood_color_ "var(--text-colour)", dx_ "0", dy_ "1", flood_opacity_ ".4" ]
       feComposite_ [in_ "SourceGraphic", in2_ "shadow", operator_ "over"]
 
-    styleSvg =
-      ".logo" ? do
-      fontFamily [fontLogo] []
-      fontSize (px 32)
-      fontWeight bold
-      "#text-glow" ? "feDropShadow" ? do
-        "flood-color" -: "var(--text-colour)"
-      "fill" -: "var(--text-colour)"
-      ".colon" ? do
+    styleSvg = do
+      "text" ? do
+        fontFamily [fontLogo] []
+        fontSize (px 32)
+        fontWeight bold
+        "filter" -: "url(#text-glow)"
+        "fill" -: "var(--text-colour)"
+      "text" # nthOfType "2" ? do
         "fill" -: "var(--accent-colour)"
 
 banner :: Svg ()
@@ -153,12 +161,13 @@ banner =
                            v 0 -#{h}
                            z
                       |]
-              ]
+                  ]
         drawBottomBar_ x y h l0 l1 l2 =
             path_ [d_ [iii|M #{x} #{y}
                            l #{l0} #{h}
                            l #{l1} 0
                            l #{l2} -#{h}
                       |]
-              ]
+                 ]
+
 
