@@ -95,20 +95,20 @@ styleHeader = do
   header ? do
     boxShadow $ fromList [bsColor (other "var(--text-colour)") $ shadowWithBlur (px 1) (px 1) (px 4)]
     width (pct 100)
-    backgroundColor white
+    position fixed
+    backgroundColor (other "var(--primary-colour)")
 
     ul ? do
       overflow hidden
 
-
     li ? a ? do
       display block
       sym padding (px 15)
-      borderRight (px 1) solid (other "var(--text-colour)")
+      borderRight (px 1) solid (other "var(--opposite-text-colour)")
       textDecoration none
       color $ other "var(--text-colour)"
       hover & do
-        backgroundColor $ other "var(--primary-colour)"
+        backgroundColor $ other "var(--secondary-colour)"
 
     ".logo" ? do
       display inlineBlock
@@ -124,7 +124,7 @@ styleHeader = do
       cursor pointer
       display inlineBlock
       float floatRight
-      sym2 padding (px 10) (px 15)
+      sym2 margin (px 10) (px 15)
       ".navicon" ? do
         display block
         height (px 2)
@@ -143,3 +143,7 @@ styleHeader = do
         float floatRight
         maxHeight none
       ".menu-icon" ? display none
+
+  "main" ? do
+    paddingTop (px 50)
+

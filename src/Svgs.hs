@@ -41,12 +41,29 @@ favicon =
 
 hamburger :: Svg ()
 hamburger =
-  with (svg2_ contentsSvg) [viewBox_ "0 0 16 16"]
+  with (svg2_ contentsSvg) [id_ "hamburger", viewBox_ "0 0 16 16"]
   where
     contentsSvg = do
-      rect_ [y_ "1", width_ "16", height_ "2"]
-      rect_ [y_ "7", width_ "16", height_ "2"]
-      rect_ [y_ "13", width_ "16", height_ "2"]
+      let defaultLineAttr = [width_ "16", height_ "2", fill_ "var(--text-colour)"]
+      let defaultBoxAttr = [width_ "16", height_ "16", fill_ "none", fill_opacity_ "0", pointer_events_ "visible"]
+      let defaultAnimateAttr = [fill_ "freeze"]
+      let defaultAnimateTransform = [dur_ "0.2s", fill_ "freeze",  attributeName_ "transform", attributeType_ "XML" ]
+      let lineIdAndYPos = [("l1", "1"), ("l2", "7"), ("l3", "13")]
+
+      forM_ lineIdAndYPos (\(lId, ly) -> rect_ $ [id_ lId, y_ ly] ++ defaultLineAttr)
+      animateTransform_ $ defaultAnimateTransform ++ [ Lucid.Svg.type_ "rotate", xlinkHref_ "#l2", from_ "0 8 8", to_ "90 8 8", begin_ "start.begin" ]
+      animateTransform_ $ defaultAnimateTransform ++ [ Lucid.Svg.type_ "rotate", xlinkHref_ "#l2", from_ "90 8 8", to_ "0 8 8", begin_ "reverse.begin" ]
+      animateTransform_ $ defaultAnimateTransform ++ [ Lucid.Svg.type_ "skewX", xlinkHref_ "#l2", values_ "0;15", begin_ "start.begin", additive_ "sum" ]
+      animateTransform_ $ defaultAnimateTransform ++ [ Lucid.Svg.type_ "skewX", xlinkHref_ "#l2", values_ "15;0", begin_ "reverse.begin", additive_ "sum" ]
+      animateTransform_ $ defaultAnimateTransform ++ [ Lucid.Svg.type_ "scale", xlinkHref_ "#l3", values_ "1;-0.1", begin_ "start.begin" ]
+      animateTransform_ $ defaultAnimateTransform ++ [ Lucid.Svg.type_ "scale", xlinkHref_ "#l3", values_ "-0.1;1", begin_ "reverse.begin" ]
+
+      rect_ $ id_ "b1" : defaultBoxAttr
+      animate_ $ defaultAnimateAttr ++ [id_ "reverse", xlinkHref_ "#b1", begin_ "b1.click"]
+
+      rect_ $ id_ "b2" : defaultBoxAttr
+      animate_ $ defaultAnimateAttr ++ [id_ "start", xlinkHref_ "#b2", attributeName_ "visibility", values_ "visible;hidden", dur_ "0.01s", begin_ "b2.click"]
+      animate_ $ defaultAnimateAttr ++ [xlinkHref_ "#b2", attributeName_ "visibility", values_ "hidden;visible", dur_ "0.01s", begin_ "reverse.begin" ]
 
 logo :: Svg ()
 logo =
