@@ -20,5 +20,6 @@ data Model = Model
   , myProfilePic :: Base64
   , myRoutes :: [Route]
   , myLogoFont :: Base64
+  , myPrimaryFont :: Base64
   } deriving (Show)
 

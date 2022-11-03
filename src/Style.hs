@@ -12,7 +12,7 @@ import Data.List.NonEmpty ( fromList )
 fontLogo, fontHeading, fontPrimary, fontSecondary :: Text
 fontLogo = "Exo2"
 fontHeading = "Helvetica"
-fontPrimary = "Tahoma"
+fontPrimary = "Jost"
 fontSecondary = "Segoe"
 
 blackPrimaryColour, blackSecondaryColour :: Text
@@ -26,11 +26,11 @@ lightShadeColour = "#6A7682"
 darkShadeColour = "#474F57"
 accentColour = "#FE5D26"
 
-styleSheetFonts :: Base64 -> Css
-styleSheetFonts d =
+styleSheetFont :: Text -> Base64 -> Css
+styleSheetFont fontName fontData = do
   fontFace $ do
-    fontFamily [fontLogo] []
-    fontFaceSrc [FontFaceSrcUrl d (Just WOFF2)]
+    fontFamily [fontName] []
+    fontFaceSrc [FontFaceSrcUrl fontData (Just WOFF2)]
 
 showText :: Show a => a -> Text
 showText = T.pack . show
@@ -135,9 +135,11 @@ styleHeader = do
 
   query M.screen [M.minWidth (em 48)] $ do
     header ? do
+      ul ? do
+        listStyleType none
       li ? do
         float floatLeft
-        a ? sym2 padding (px 20) (px 30)
+        a ? sym2 padding (px 10) (px 20)
       ".menu" ? do
         clear none
         float floatRight

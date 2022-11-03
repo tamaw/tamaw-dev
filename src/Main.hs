@@ -2,7 +2,7 @@ module Main where
 
 import Types
 import Svgs (favicon, logo, hamburger)
-import Style ( styleSheet, styleSheetFonts )
+import Style ( styleSheet, styleSheetFont, fontLogo, fontPrimary )
 
 import Lucid
 import qualified Clay
@@ -48,6 +48,7 @@ main = do
           , myProfilePic = lookupResource "profile.jpg" imgs
           , myRoutes = routes
           , myLogoFont = lookupResource "exo2-bold-webfont.woff2" fonts
+          , myPrimaryFont = lookupResource "jost-400-book-webfont.woff2" fonts
         }
 
   -- write out html
@@ -100,7 +101,8 @@ headHtml m = do
   -- meta_ [name_ "description", content_ "replace me" ]
   link_ [rel_ "icon", href_ ("data:image/svg+xml," <> urlEncodedFavIco favicon)]
   style_ [type_ "text/css"] $ toStrict (Clay.renderWith prettyConfig [] styleSheet)
-  style_ [type_ "text/css"] $ toStrict (Clay.renderWith Clay.compact [] $ styleSheetFonts $ myLogoFont m)
+  style_ [type_ "text/css"] $ toStrict (Clay.renderWith Clay.compact [] $ styleSheetFont fontLogo (myLogoFont m))
+  style_ [type_ "text/css"] $ toStrict (Clay.renderWith prettyConfig [] $ styleSheetFont fontPrimary (myPrimaryFont m))
 
   where
     prettyConfig = pretty { Clay.Render.banner = False }
