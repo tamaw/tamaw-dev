@@ -1,0 +1,10 @@
+resolver: lts-18.28
+
+packages:
+- .
+
+extra-deps:
+- clay-0.14.0
+- lucid-svg-0.7.1
+
+apply-ghc-options: everything

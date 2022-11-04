@@ -1,0 +1,40 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           tama-id-au
+version:        0.0.0
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+
+executable tama-id-au
+  main-is: Main.hs
+  other-modules:
+      Style
+      Svgs
+      Types
+      Paths_tama_id_au
+  hs-source-dirs:
+      src
+  default-extensions:
+      OverloadedStrings
+      ExtendedDefaultRules
+      QuasiQuotes
+  ghc-options: -Wall
+  build-depends:
+      base
+    , base64
+    , bytestring
+    , clay
+    , containers
+    , directory
+    , filepath
+    , lucid
+    , lucid-svg
+    , string-interpolate
+    , text
+    , uri-encode
+  default-language: Haskell2010

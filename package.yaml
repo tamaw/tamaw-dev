@@ -1,0 +1,27 @@
+name: tama-id-au
+
+default-extensions:
+  - OverloadedStrings
+  - ExtendedDefaultRules
+  - QuasiQuotes
+
+ghc-options:
+  - -Wall
+
+dependencies:
+  - base
+  - containers
+  - lucid
+  - clay
+  - text
+  - bytestring
+  - directory
+  - filepath
+  - base64
+  - uri-encode
+  - lucid-svg
+  - string-interpolate
+
+executable:
+  main: Main.hs
+  source-dirs: src
