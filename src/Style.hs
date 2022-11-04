@@ -93,22 +93,20 @@ styleCommons = do
 styleHeader :: Css
 styleHeader = do
   header ? do
-    boxShadow $ fromList [bsColor (other "var(--text-colour)") $ shadowWithBlur (px 1) (px 1) (px 4)]
     width (pct 100)
     position fixed
-    backgroundColor (other "var(--primary-colour)")
-
-    ul ? do
-      overflow hidden
+    backgroundColor (other "var(--opposite-text-colour)")
+    boxShadow $ fromList [bsColor (other "var(--text-colour)") $ shadowWithBlur (px 0) (px 1) (px 4)]
 
     li ? a ? do
       display block
+      borderRight (px 1) solid (other "var(--secondary-colour)")
       sym padding (px 15)
-      borderRight (px 1) solid (other "var(--opposite-text-colour)")
       textDecoration none
       color $ other "var(--text-colour)"
       hover & do
-        backgroundColor $ other "var(--secondary-colour)"
+        color $ other "var(--accent-colour)"
+        "transition" -: "color 0.3s ease"
 
     ".logo" ? do
       display inlineBlock
@@ -117,21 +115,25 @@ styleHeader = do
 
     ".menu" ? do
       clear both
+      overflow hidden
       maxHeight (px 0)
+      userSelect none
+      height none
       transition "max-height" (sec 0.2) easeOut (ms 0)
+
+    ".menu-btn" # checked |~ ".menu" ? do
+      height auto
+      maxHeight (px 1000)
 
     ".menu-icon" ? do
       cursor pointer
       display inlineBlock
       float floatRight
       sym2 margin (px 10) (px 15)
-      ".navicon" ? do
+      ".hamburger" ? do
         display block
         height (px 2)
         width (px 24)
-
-    ".menu-btn" # checked |~ ".menu" ?
-      maxHeight (pct 100)
 
   query M.screen [M.minWidth (em 48)] $ do
     header ? do
@@ -139,7 +141,9 @@ styleHeader = do
         listStyleType none
       li ? do
         float floatLeft
-        a ? sym2 padding (px 10) (px 20)
+        a ? do
+         "border-right" -: "none"
+         sym2 padding (px 10) (px 20)
       ".menu" ? do
         clear none
         float floatRight

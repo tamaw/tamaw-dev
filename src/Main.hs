@@ -112,7 +112,7 @@ navHtml :: Model -> Html ()
 navHtml m = do
   input_ [class_ "menu-btn hidden", type_ "checkbox", id_ "menu-btn"]
   label_ [class_ "menu-icon", for_ "menu-btn"] $ do
-    span_ [class_ "navicon"] hamburger
+    span_ [class_ "hamburger"] hamburger
   ul_ [class_ "menu"] $ forM_ (myRoutes m) renderNavItem
   where
     renderNavItem :: Route -> Html ()
