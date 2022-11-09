@@ -1,7 +1,7 @@
 module Main where
 
 import Types
-import Svgs (favicon, logo, hamburger)
+import Svgs
 import Style ( styleSheet, styleSheetFont, fontLogo, fontPrimary )
 
 import Lucid
@@ -61,6 +61,7 @@ main = do
     lookupResource n r = fromJust $ List.lookup n r
 
 routeToFileName :: Route -> FileName
+routeToFileName Home = "index.html"
 routeToFileName r =  map toLower (show r) <.> "html"
 
 loadFile :: (BS.ByteString -> a) -> FilePath -> IO (FileName, a)
@@ -87,10 +88,11 @@ masterHtml r m = do
         a_ [href_ "#", class_ "logo"] logo
         navHtml m
       main_ $ case r of
-          Index -> p_ "content"
+          Home -> do p_ "caaa"
+                     span_ [] sliderBtn
           Blog -> do
             p_ "contenta"
-            div_ [style_ "width:40px"] hamburger
+            div_ [style_ "width:10px"] hamburger
           _ -> return ()
 
 headHtml :: Model -> Html ()
@@ -110,6 +112,7 @@ headHtml m = do
 
 navHtml :: Model -> Html ()
 navHtml m = do
+  -- span_ [] sliderBtn
   input_ [class_ "menu-btn hidden", type_ "checkbox", id_ "menu-btn"]
   label_ [class_ "menu-icon", for_ "menu-btn"] $ do
     span_ [class_ "hamburger"] hamburger

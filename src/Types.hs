@@ -8,7 +8,7 @@ type Base64 = Text
 type Svg = Html ()
 
 data Route =
-  Index
+  Home
   | Blog
   | Speaking
   | Projects

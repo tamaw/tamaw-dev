@@ -34,11 +34,42 @@ favicon =
       text_ [y_ symbolHeight, x_ "7"] ":"
 
     styleSvg = do
-      "text" ? do
+      ".favicon" ? "text" ? do
         fontFamily [fontHeading] [sansSerif]
         fontSize (px 20)
         "fill" -: accentColour
 
+sliderBtn :: Svg ()
+sliderBtn =
+  with (svg2_ contentsSvg) [class_ "slider"]
+  where
+    contentsSvg = do
+      style_ . fromString $ renderCss styleSvg
+
+      rect_ [width_ "50", height_ "25", ry_ "12", stroke_ "black", stroke_width_ "2", fill_ "none", x_ "10", y_ "1"]
+      text_ [y_ "18", x_ "14"] "🌙"
+      circle_ [id_ "slider-circle", fill_ "var(--text-colour)", cx_ "22", cy_ "13.5", r_ "10"]
+      animate_ [xlinkHref_ "#slider-circle", attributeName_ "cx", from_ "22", to_ "48", dur_ "0.1s", begin_ "forward.begin", fill_ "freeze" ]
+      animate_ [xlinkHref_ "#slider-circle", attributeName_ "cx", from_ "48", to_ "22", dur_ "0.1s", begin_ "backward.begin", fill_ "freeze" ]
+      text_ [y_ "19", x_ "41"] "☀️"
+
+      -- animation overlay
+      rect_ [id_ "s1", width_ "50", height_ "25", x_ "10", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible"]
+      animate_ [id_ "backward", xlinkHref_ "#s1", begin_ "s1.click", fill_ "freeze"]
+
+      -- animation overlay
+      rect_ [id_ "s2", width_ "50", height_ "25", x_ "10", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible"]
+      animate_ [id_ "forward", xlinkHref_ "#s2", attributeName_ "visibility", values_ "visible;hidden", dur_ "0.01s", begin_ "s2.click", fill_ "freeze"]
+      animate_ [xlinkHref_ "#s2", attributeName_ "visibility", values_ "hidden;visible", dur_ "0.01s", begin_ "backward.begin", fill_ "freeze" ]
+
+    styleSvg = do
+      ".slider" ? "text" ? do
+        fontSize (px 14)
+        fontFamily [fontPrimary] [sansSerif]
+        "fill" -: "transparent"
+        textShadow (px 0) 0 0 (other "var(--text-colour)")
+
+-- todo clean up with styles, let for ids, better id names
 hamburger :: Svg ()
 hamburger =
   with (svg2_ contentsSvg) [id_ "hamburger", viewBox_ "0 0 16 16"]
@@ -46,7 +77,6 @@ hamburger =
     contentsSvg = do
       let defaultLineAttr = [width_ "16", height_ "2", fill_ "var(--text-colour)"]
       let defaultBoxAttr = [width_ "16", height_ "16", fill_ "none", fill_opacity_ "0", pointer_events_ "visible"]
-      let defaultAnimateAttr = [fill_ "freeze"]
       let defaultAnimateTransform = [dur_ "0.2s", fill_ "freeze",  attributeName_ "transform", attributeType_ "XML" ]
       let lineIdAndYPos = [("l1", "1"), ("l2", "7"), ("l3", "13")]
 
@@ -59,15 +89,15 @@ hamburger =
       animateTransform_ $ defaultAnimateTransform ++ [ Lucid.Svg.type_ "scale", xlinkHref_ "#l3", values_ "-0.1;1", begin_ "reverse.begin" ]
 
       rect_ $ id_ "b1" : defaultBoxAttr
-      animate_ $ defaultAnimateAttr ++ [id_ "reverse", xlinkHref_ "#b1", begin_ "b1.click"]
+      animate_ [id_ "reverse", xlinkHref_ "#b1", begin_ "b1.click", fill_ "freeze"]
 
       rect_ $ id_ "b2" : defaultBoxAttr
-      animate_ $ defaultAnimateAttr ++ [id_ "start", xlinkHref_ "#b2", attributeName_ "visibility", values_ "visible;hidden", dur_ "0.01s", begin_ "b2.click"]
-      animate_ $ defaultAnimateAttr ++ [xlinkHref_ "#b2", attributeName_ "visibility", values_ "hidden;visible", dur_ "0.01s", begin_ "reverse.begin" ]
+      animate_ [id_ "start", xlinkHref_ "#b2", attributeName_ "visibility", values_ "visible;hidden", dur_ "0.01s", begin_ "b2.click", fill_ "freeze"]
+      animate_ [xlinkHref_ "#b2", attributeName_ "visibility", values_ "hidden;visible", dur_ "0.01s", begin_ "reverse.begin", fill_ "freeze" ]
 
 logo :: Svg ()
 logo =
-  with (svg2_ contentsSvg) [width_ "150px", height_ "30px"]
+  with (svg2_ contentsSvg) [class_ "logo", width_ "150px", height_ "30px"]
   where
     contentsSvg = do
       style_ . fromString $ renderCss styleSvg
@@ -83,14 +113,15 @@ logo =
       feComposite_ [in_ "SourceGraphic", in2_ "shadow", operator_ "over"]
 
     styleSvg = do
-      "text" ? do
-        fontFamily [fontLogo] []
-        fontSize (px 32)
-        fontWeight bold
-        "filter" -: "url(#text-glow)"
-        "fill" -: "var(--text-colour)"
-      "text" # nthOfType "2" ? do
-        "fill" -: "var(--accent-colour)"
+      ".logo" ? do
+        "text" ? do
+          fontFamily [fontLogo] []
+          fontSize (px 32)
+          fontWeight bold
+          "filter" -: "url(#text-glow)"
+          "fill" -: "var(--text-colour)"
+        "text" # nthOfType "2" ? do
+          "fill" -: "var(--accent-colour)"
 
 banner :: Svg ()
 banner =

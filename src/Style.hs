@@ -111,7 +111,7 @@ styleHeader = do
     ".logo" ? do
       display inlineBlock
       float floatLeft
-      sym2 padding (px 5) (px 10)
+      sym2 margin (px 3) (px 5)
 
     ".menu" ? do
       clear both
