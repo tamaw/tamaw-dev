@@ -45,21 +45,14 @@ styleDefaults :: Css
 styleDefaults = do
   ":root" ? do
     "color-scheme" -: "light dark"
+    "--accent-colour" -: accentColour
     "--text-colour" -: "black"
     "--opposite-text-colour" -: "white"
     "--primary-colour" -: whitePrimaryColour
     "--secondary-colour" -: whiteSecondaryColour
     "--shade-colour" -: lightShadeColour
-    "--accent-colour" -: accentColour
 
-  -- query M.screen [Feature "prefers-color-scheme" $ Just "dark"] $ do
-  --   ":root" ? do
-  --     "--text-colour" -: "white"
-  --     "--opposite-text-colour" -: "black"
-  --     "--primary-colour" -: blackPrimaryColour
-  --     "--secondary-colour" -: blackSecondaryColour
-  --     "--shade-colour" -: darkShadeColour
-
+  -- dark mode
   ":root.dark" ? do
     "--text-colour" -: "white"
     "--opposite-text-colour" -: "black"
