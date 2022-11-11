@@ -47,27 +47,29 @@ sliderBtn =
       style_ . fromString $ renderCss styleSvg
 
       rect_ [width_ "50", height_ "25", ry_ "12", stroke_ "black", stroke_width_ "2", fill_ "none", x_ "10", y_ "1"]
-      text_ [y_ "18", x_ "14"] "🌙"
+      text_ [y_ "18", x_ "14"] "☀️"
+      text_ [y_ "19", x_ "41"] "️🌙"
       circle_ [id_ "slider-circle", fill_ "var(--text-colour)", cx_ "22", cy_ "13.5", r_ "10"]
       animate_ [xlinkHref_ "#slider-circle", attributeName_ "cx", from_ "22", to_ "48", dur_ "0.1s", begin_ "forward.begin", fill_ "freeze" ]
       animate_ [xlinkHref_ "#slider-circle", attributeName_ "cx", from_ "48", to_ "22", dur_ "0.1s", begin_ "backward.begin", fill_ "freeze" ]
-      text_ [y_ "19", x_ "41"] "☀️"
 
       -- animation overlay
-      rect_ [id_ "s1", width_ "50", height_ "25", x_ "10", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible"]
+      rect_ [id_ "s1", width_ "50", height_ "25", x_ "10", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible", onclick_ "document.documentElement.classList.toggle('dark');"]
       animate_ [id_ "backward", xlinkHref_ "#s1", begin_ "s1.click", fill_ "freeze"]
 
       -- animation overlay
-      rect_ [id_ "s2", width_ "50", height_ "25", x_ "10", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible"]
+      rect_ [id_ "s2", width_ "50", height_ "25", x_ "10", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible",  onclick_ "document.documentElement.classList.toggle('dark');"]
       animate_ [id_ "forward", xlinkHref_ "#s2", attributeName_ "visibility", values_ "visible;hidden", dur_ "0.01s", begin_ "s2.click", fill_ "freeze"]
       animate_ [xlinkHref_ "#s2", attributeName_ "visibility", values_ "hidden;visible", dur_ "0.01s", begin_ "backward.begin", fill_ "freeze" ]
 
     styleSvg = do
-      ".slider" ? "text" ? do
-        fontSize (px 14)
-        fontFamily [fontPrimary] [sansSerif]
-        "fill" -: "transparent"
-        textShadow (px 0) 0 0 (other "var(--text-colour)")
+      ".slider" ? do
+        "text" ? do
+          fontSize (px 14)
+          fontFamily [fontPrimary] [sansSerif]
+          -- chrome not supported
+          --- fill" -: "transparent"
+          --- extShadow (px 0) 0 0 (other "var(--text-colour)")
 
 -- todo clean up with styles, let for ids, better id names
 hamburger :: Svg ()

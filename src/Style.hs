@@ -52,13 +52,20 @@ styleDefaults = do
     "--shade-colour" -: lightShadeColour
     "--accent-colour" -: accentColour
 
-  query M.screen [Feature "prefers-color-scheme" $ Just "dark"] $ do
-    ":root" ? do
-      "--text-colour" -: "white"
-      "--opposite-text-colour" -: "black"
-      "--primary-colour" -: blackPrimaryColour
-      "--secondary-colour" -: blackSecondaryColour
-      "--shade-colour" -: darkShadeColour
+  -- query M.screen [Feature "prefers-color-scheme" $ Just "dark"] $ do
+  --   ":root" ? do
+  --     "--text-colour" -: "white"
+  --     "--opposite-text-colour" -: "black"
+  --     "--primary-colour" -: blackPrimaryColour
+  --     "--secondary-colour" -: blackSecondaryColour
+  --     "--shade-colour" -: darkShadeColour
+
+  ":root.dark" ? do
+    "--text-colour" -: "white"
+    "--opposite-text-colour" -: "black"
+    "--primary-colour" -: blackPrimaryColour
+    "--secondary-colour" -: blackSecondaryColour
+    "--shade-colour" -: darkShadeColour
 
   star <> star # before <> star # after ? do
     boxSizing inherit
