@@ -88,7 +88,8 @@ masterHtml r m = do
         a_ [href_ "#", class_ "logo"] logo
         navHtml m
       main_ $ case r of
-          Home -> do Svgs.banner
+          Home -> do
+            div_ [class_ "home-banner"] Svgs.banner
           Blog -> do
             p_ "contenta"
             div_ [style_ "width:10px"] hamburger
@@ -118,10 +119,10 @@ headHtml m = do
 
 navHtml :: Model -> Html ()
 navHtml m = do
-  sliderBtn
   input_ [class_ "menu-btn hidden", type_ "checkbox", id_ "menu-btn"]
   label_ [class_ "menu-icon", for_ "menu-btn"] $ do
     span_ [class_ "hamburger"] hamburger
+  label_ [class_ "theme-slider"] sliderBtn
   ul_ [class_ "menu"] $ forM_ (myRoutes m) renderNavItem
   where
     renderNavItem :: Route -> Html ()

@@ -40,6 +40,7 @@ styleSheet = do
   styleDefaults
   styleCommons
   styleHeader
+  styleHome
 
 styleDefaults :: Css
 styleDefaults = do
@@ -113,6 +114,11 @@ styleHeader = do
       float floatLeft
       sym2 margin (px 3) (px 5)
 
+    ".theme-slider" ? do
+      float floatRight
+      marginTop (px 10)
+      marginRight (px 10)
+
     ".menu" ? do
       clear both
       overflow hidden
@@ -153,3 +159,7 @@ styleHeader = do
   "main" ? do
     paddingTop (px 50)
 
+styleHome :: Css
+styleHome = do
+  width auto
+  maxWidth (pct 100)

@@ -38,27 +38,28 @@ favicon =
         fontFamily [fontHeading] [sansSerif]
         fontSize (px 20)
         "fill" -: accentColour
+        userSelect none
 
 sliderBtn :: Svg ()
 sliderBtn =
-  with (svg2_ contentsSvg) [class_ "slider"]
+  with (svg2_ contentsSvg) [class_ "slider", viewBox_ "0 0 15 30", width_ "45", height_ "25" ]
   where
     contentsSvg = do
       style_ . fromString $ renderCss styleSvg
 
-      rect_ [width_ "50", height_ "25", ry_ "12", stroke_ "black", stroke_width_ "2", fill_ "none", x_ "10", y_ "1"]
-      text_ [y_ "18", x_ "14"] "☀️"
-      text_ [y_ "19", x_ "41"] "️🌙"
-      circle_ [id_ "slider-circle", fill_ "var(--text-colour)", cx_ "22", cy_ "13.5", r_ "10"]
-      animate_ [xlinkHref_ "#slider-circle", attributeName_ "cx", from_ "22", to_ "48", dur_ "0.1s", begin_ "forward.begin", fill_ "freeze" ]
-      animate_ [xlinkHref_ "#slider-circle", attributeName_ "cx", from_ "48", to_ "22", dur_ "0.1s", begin_ "backward.begin", fill_ "freeze" ]
+      rect_ [width_ "50", height_ "25", ry_ "12", stroke_ "var(--text-colour)", stroke_width_ "2", fill_ "none", x_ "-18", y_ "1"]
+      text_ [y_ "19", x_ "11"] "☀️"
+      text_ [y_ "19", x_ "-12"] "️🌙"
+      circle_ [id_ "slider-circle", fill_ "var(--text-colour)", cx_ "-5", cy_ "13.5", r_ "10"]
+      animate_ [xlinkHref_ "#slider-circle", attributeName_ "cx", from_ "-5", to_ "18", dur_ "0.1s", begin_ "forward.begin", fill_ "freeze" ]
+      animate_ [xlinkHref_ "#slider-circle", attributeName_ "cx", from_ "18", to_ "-5", dur_ "0.1s", begin_ "backward.begin", fill_ "freeze" ]
 
       -- animation overlay
-      rect_ [id_ "s1", width_ "50", height_ "25", x_ "10", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible", onclick_ "document.documentElement.classList.toggle('dark');"]
+      rect_ [id_ "s1", width_ "50", height_ "25", x_ "-18", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible", onclick_ "document.documentElement.classList.toggle('dark');"]
       animate_ [id_ "backward", xlinkHref_ "#s1", begin_ "s1.click", fill_ "freeze"]
 
       -- animation overlay
-      rect_ [id_ "s2", width_ "50", height_ "25", x_ "10", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible",  onclick_ "document.documentElement.classList.toggle('dark');"]
+      rect_ [id_ "s2", width_ "50", height_ "25", x_ "-18", y_ "1", fill_ "none", fill_opacity_ "0", pointer_events_ "visible",  onclick_ "document.documentElement.classList.toggle('dark');"]
       animate_ [id_ "forward", xlinkHref_ "#s2", attributeName_ "visibility", values_ "visible;hidden", dur_ "0.01s", begin_ "s2.click", fill_ "freeze"]
       animate_ [xlinkHref_ "#s2", attributeName_ "visibility", values_ "hidden;visible", dur_ "0.01s", begin_ "backward.begin", fill_ "freeze" ]
 
@@ -67,6 +68,7 @@ sliderBtn =
         "text" ? do
           fontSize (px 14)
           fontFamily [fontPrimary] [sansSerif]
+          userSelect none
           -- chrome not supported
           --- fill" -: "transparent"
           --- extShadow (px 0) 0 0 (other "var(--text-colour)")
@@ -116,6 +118,7 @@ logo =
 
     styleSvg = do
       ".logo" ? do
+        userSelect none
         "text" ? do
           fontFamily [fontLogo] []
           fontSize (px 32)
